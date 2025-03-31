@@ -25,11 +25,12 @@ export const postUser = async (req, res) => {
 
 export const putUser = async (req, res) => {
 	const sql = connectDB();
-	const { username, first_name, last_name, birthdate, password, email } = req.body;
+	const { username, first_name, password, points } = req.body;
 	const query = { 
-		text: "UPDATE users SET username = $1, first_name = $2, last_name = $3, birthdate = $4, password = $5, email = $6 WHERE user_id = $7",
-		values: [username, first_name, last_name, birthdate, password, email, req.params.id]};
+		text: "UPDATE users SET username = $1, first_name = $2, password = $3, points = $4 WHERE user_id = $5",
+		values: [username, first_name, password, points, req.params.id]};
 	const data = await sql.query(query);
+	if (data.rowCount == 0) res.status(400).send("id invalido");
 	res.send("ok");
 };
 

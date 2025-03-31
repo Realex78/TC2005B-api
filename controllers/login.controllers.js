@@ -12,7 +12,7 @@ export const login = async (req, res) => {
 		return;
 	}
 	if (req.body.password === data.rows[0].password) {
-		res.json({ isLogin: true, user: data.rows });
+		res.json({ isLogin: true, user: data.rows[0] });
 		return;
 	} else {
 		res.json({ isLogin: false, user: {} });
