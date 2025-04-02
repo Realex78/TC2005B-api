@@ -1,4 +1,5 @@
 import { connectDB } from "../utils/sql.js";
+import { getSalt, hashPassword } from "../utils/hash.js";
 
 export const getUsers = async (req, res) => {
 	const sql = connectDB();
@@ -16,9 +17,13 @@ export const getUser = async (req, res) => {
 export const postUser = async (req, res) => {
 	const sql = connectDB();
 	const { username, first_name, last_name, birthdate, password, email } = req.body;
+	const salt = getSalt();
+	const hash = hashPassword(password, salt);
+	const saltedHash = salt + hash;
 	const query = { 
 		text: "INSERT INTO users (username, first_name, last_name, birthdate, password, email) VALUES ($1, $2, $3, $4, $5, $6)",
-		values: [username, first_name, last_name, birthdate, password, email]};
+		values: [username, first_name, last_name, birthdate, saltedHash, email]};
+	console.log(saltedHash.length)
 	const data = await sql.query(query);
 	res.send("ok");
 };
